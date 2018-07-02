@@ -100,6 +100,7 @@ module ActsAsIndexed
 
     def search_index(query, find_options={}, options={})
 
+#binding.pry
       # Clear the query cache off  if the key is set.
       @query_cache = {}  if options[:no_query_cache]
 
@@ -177,10 +178,14 @@ module ActsAsIndexed
     def sort(ranked_records)
       ranked_records.sort { |a, b|
         a_score = a.last
-        a_id = a.first.is_a?(Fixnum) ? a.first : a.first.id
+        # Now AR object ids are strings.  Make it work with either string or int keys
+        #a_id = a.first.is_a?(Fixnum) ? a.first : a.first.id
+        a_id = a.first.is_a?(Fixnum) || a.first.is_a?(String) ? a.first : a.first.id
 
         b_score = b.last
-        b_id = b.first.is_a?(Fixnum) ? b.first : b.first.id
+        # Now AR object ids are strings.  Make it work with either string or int keys
+        # b_id = b.first.is_a?(Fixnum) ? b.first : b.first.id
+        b_id = b.first.is_a?(Fixnum) || b.first.is_a?(String) ? b.first : b.first.id
 
         if a_score == b_score
           a_id <=> b_id
